@@ -4,10 +4,11 @@ import pandas as pd
 import json
 
 DOTA_APP_ID = 570  # Dota 2 App ID
+DOTA_CONTEXT_ID = 2  # Correct context ID for Dota 2
 
 # Function to fetch Steam inventory
 def fetch_inventory(steam_id):
-    url = f"https://steamcommunity.com/id/{steam_id}/{DOTA_APP_ID}/2#570"
+    url = f"https://steamcommunity.com/inventory/{steam_id}/{DOTA_APP_ID}/{DOTA_CONTEXT_ID}?l=english&count=5000"
     response = requests.get(url)
     if response.status_code == 200:
         return response.json()
@@ -51,5 +52,16 @@ if st.button("Calculate Inventory Value") and steam_id:
         st.dataframe(df)
         
         st.write(f"## Total Inventory Value: ${total_value:.2f}")
+    else:
+        st.error("Failed to fetch inventory. Make sure your inventory is public and the Steam ID is correct.")
+
+if st.button("Print Inventory List") and steam_id:
+    inventory_data = fetch_inventory(steam_id)
+    if inventory_data and "descriptions" in inventory_data:
+        st.write("### Inventory List:")
+        for item in inventory_data["descriptions"]:
+            item_name = item.get("market_hash_name", "Unknown Item")
+            price = fetch_item_price(item_name)
+            st.write(f"{item_name}. Price: {price}")
     else:
         st.error("Failed to fetch inventory. Make sure your inventory is public and the Steam ID is correct.")
