@@ -7,7 +7,7 @@ DOTA_APP_ID = 570  # Dota 2 App ID
 
 # Function to fetch Steam inventory
 def fetch_inventory(steam_id):
-    url = f"https://steamcommunity.com/inventory/{steam_id}/{DOTA_APP_ID}/2?l=english&count=5000"
+    url = f"https://steamcommunity.com/id/{steam_id}/{DOTA_APP_ID}/2#570"
     response = requests.get(url)
     if response.status_code == 200:
         return response.json()
